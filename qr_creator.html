@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Creator — Free QR Code Generator</title>
+<style>
+:root{--bg:#031021;--panel:#06162a;--line:#12345a;--text:#f5f8ff;--muted:#a9c4e9;--blue:#087cf5;--purple:#a22cff;--field:#041329}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% -20%,#10254d 0%,var(--bg) 58%);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 4%;border-bottom:1px solid #112a49;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px;font-size:27px;font-weight:800;letter-spacing:-.7px}.logo{font-size:36px;color:#3bbdff}.gradient{background:linear-gradient(100deg,#16b5ff,#a32cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);font-size:14px;font-weight:400;letter-spacing:0}
+nav{display:flex;align-items:center;gap:18px;color:#c5d8f4;font-size:14px}
+nav button{border:0;background:transparent;color:inherit;cursor:pointer;font:inherit;padding:8px}
+main{max-width:1280px;margin:auto;padding:24px 22px 28px}
+.hero{text-align:center;margin:8px 0 27px}.hero h1{font-size:clamp(27px,4vw,44px);margin:0 0 8px;letter-spacing:-1px}.hero p{color:#b9d0ef;margin:0;font-size:clamp(14px,2vw,18px)}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.95fr);gap:24px}
+.panel{background:linear-gradient(145deg,rgba(7,23,44,.96),rgba(3,15,30,.97));border:1px solid var(--line);border-radius:20px;padding:23px;box-shadow:0 14px 40px #0002}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.tab{flex:1;min-width:74px;border:1px solid #20466f;border-radius:30px;background:transparent;color:#c5dcff;padding:12px 10px;cursor:pointer;font-size:14px}
+.tab.active{background:linear-gradient(100deg,#1688ff,#9e2cf5);border-color:transparent;color:white}
+label{display:block;font-weight:650;margin:16px 0 9px}.field,select,textarea{width:100%;background:var(--field);color:var(--text);border:1px solid #204c7e;border-radius:13px;padding:14px;font:inherit;outline:none}.field:focus,select:focus,textarea:focus{border-color:#249dff;box-shadow:0 0 0 3px #1688ff22}
+textarea{resize:vertical;min-height:105px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.grid4 label{font-size:13px;color:#d2e3ff;font-weight:500}.grid4 select{padding:12px 8px;font-size:13px}
+.primary{width:100%;border:0;border-radius:14px;margin-top:24px;padding:16px 14px;background:linear-gradient(100deg,#0787ff,#a12cf4);color:white;font-weight:750;font-size:17px;cursor:pointer}.primary:hover,.download:hover{filter:brightness(1.12)}
+.preview-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;font-weight:750}.download{border:0;border-radius:25px;background:linear-gradient(100deg,#087ef6,#304cfb);color:white;padding:11px 15px;cursor:pointer;font-weight:650}
+.qrbox{min-height:320px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:16px;padding:15px;margin:0 auto;max-width:330px;overflow:hidden}
+#qrcode img,#qrcode canvas{max-width:100%;height:auto!important}
+.hint{text-align:center;color:#bdd4f3;font-size:13px;margin:16px 0 0}.status{text-align:center;color:#8fe9bd;font-size:13px;min-height:18px;margin-top:8px}
+.features{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:24px;padding:18px 8px}.feature{text-align:center;padding:8px 10px;border-right:1px solid #17395d}.feature:last-child{border:0}.feature b{display:block;font-size:14px;margin:4px 0}.feature span{font-size:12px;color:var(--muted)}.feature i{font-style:normal;font-size:25px}
+footer{text-align:center;color:#678bb8;font-size:12px;padding:0 0 20px}
+.light{--bg:#eef5ff;--panel:#fff;--line:#c6d9f2;--text:#10213b;--muted:#536b8b;--field:#f7faff;background:linear-gradient(#e7f0ff,#f8fbff)}.light header{border-color:#d4e2f5}.light .panel{background:#fff}.light .hero p,.light .hint{color:#536b8b}.light nav{color:#243f64}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}.feature:nth-child(2){border-right:0}.feature{border-bottom:1px solid #17395d}.feature:last-child{grid-column:1/-1;border-bottom:0}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){header{padding:14px 5%}.brand{font-size:22px}.logo{font-size:30px}nav{gap:4px}main{padding:20px 13px}.panel{padding:16px}.tab{padding:10px 7px;font-size:12px}.qrbox{min-height:260px}.preview-head{align-items:flex-start;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="logo">▦</span><div>QR <span class="gradient">Creator</span><div class="sub">Link · Text · WiFi · More</div></div></div>
+  <nav><button onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ Home</button><button onclick="showHistory()">◷ History</button><button onclick="showSettings()">⚙ Settings</button><button onclick="toggleTheme()" id="themeBtn">☾ Dark Mode</button></nav>
+</header>
+<main>
+  <section class="hero"><h1>Create Your Own <span class="gradient">QR Code</span></h1><p>Enter your link, text or choose a type. Generate, download and share!</p></section>
+  <section class="layout">
+    <div class="panel">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-type="Link">🔗 Link</button><button class="tab" data-type="Text">T Text</button><button class="tab" data-type="WiFi">⌁ WiFi</button><button class="tab" data-type="Contact">♙ Contact</button><button class="tab" data-type="SMS">▤ SMS</button><button class="tab" data-type="Email">✉ Email</button>
+      </div>
+      <div id="formArea"><label for="content">🔗 Enter your URL</label><input class="field" id="content" placeholder="https://www.example.com" value="https://www.example.com" autocomplete="url"></div>
+      <label>🎨 Customize <span style="color:var(--muted);font-weight:400">(Optional)</span></label>
+      <div class="grid4">
+        <div><label for="size">Size</label><select id="size"><option value="200">200 × 200</option><option value="300" selected>300 × 300</option><option value="400">400 × 400</option><option value="600">600 × 600</option></select></div>
+        <div><label for="color">QR Color</label><select id="color"><option value="#0756b8">Blue</option><option value="#111827">Black</option><option value="#16803c">Green</option><option value="#7c2be8">Purple</option><option value="#d52646">Red</option></select></div>
+        <div><label for="bgcolor">Background</label><select id="bgcolor"><option value="#ffffff">White</option><option value="#fff4d6">Cream</option><option value="#e9f8ff">Pale Blue</option></select></div>
+        <div><label for="margin">Quiet Zone</label><select id="margin"><option value="4">Normal</option><option value="2">Small</option><option value="6">Large</option></select></div>
+      </div>
+      <button class="primary" onclick="generateQR()">▦ &nbsp; Generate QR Code</button>
+      <p id="message" class="status" role="status"></p>
+    </div>
+    <div class="panel">
+      <div class="preview-head"><span>▦ &nbsp; Your QR Code</span><button class="download" onclick="downloadQR()">⬇ Download PNG</button></div>
+      <div class="qrbox"><div id="qrcode" aria-label="QR code preview"></div></div>
+      <p class="hint" id="hint">Scan this QR code to open the link</p>
+      <p class="status" id="previewStatus"></p>
+    </div>
+  </section>
+  <section class="panel features">
+    <div class="feature"><i>⚡</i><b>Fast & Easy</b><span>Generate in seconds</span></div>
+    <div class="feature"><i>🛡️</i><b>100% Free</b><span>No account needed</span></div>
+    <div class="feature"><i>📱</i><b>Works Anywhere</b><span>Scan on any device</span></div>
+    <div class="feature"><i>🎨</i><b>Customizable</b><span>Colors and size</span></div>
+    <div class="feature"><i>⬇️</i><b>Download & Share</b><span>Save as PNG</span></div>
+  </section>
+</main>
+<footer>QR Creator · Make your world more connected ❤️</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+let currentType='Link', qrInstance=null, historyItems=[];
+const formArea=document.getElementById('formArea');
+const labels={Link:'🔗 Enter your URL',Text:'T Enter your text',WiFi:'⌁ WiFi details',Contact:'♙ Contact details',SMS:'▤ SMS details',Email:'✉ Email details'};
+function inputField(id,placeholder,type='text'){return `<input class="field" id="${id}" type="${type}" placeholder="${placeholder}">`}
+function renderForm(){
+ let html='';
+ if(currentType==='Link') html=`<label for="content">${labels.Link}</label>${inputField('content','https://www.example.com','url')}`;
+ if(currentType==='Text') html=`<label for="content">${labels.Text}</label><textarea class="field" id="content" placeholder="Type any message or text here..."></textarea>`;
+ if(currentType==='WiFi') html=`<label>WiFi network name (SSID)</label>${inputField('ssid','Your WiFi name')}<label>Password</label>${inputField('wifiPass','WiFi password','text')}<label>Security</label><select id="security" class="field"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">No password</option></select><label><input id="hidden" type="checkbox"> Hidden network</label>`;
+ if(currentType==='Contact') html=`<label>Full name</label>${inputField('cname','Name')}<label>Phone</label>${inputField('cphone','Phone number','tel')}<label>Email</label>${inputField('cemail','Email address','email')}<label>Organization</label>${inputField('corg','Company (optional)')}`;
+ if(currentType==='SMS') html=`<label>Phone number</label>${inputField('phone','Phone number','tel')}<label>Message</label><textarea class="field" id="smsText" placeholder="Your message"></textarea>`;
+ if(currentType==='Email') html=`<label>Email address</label>${inputField('emailTo','name@example.com','email')}<label>Subject</label>${inputField('emailSubject','Subject')}<label>Message</label><textarea class="field" id="emailBody" placeholder="Your message"></textarea>`;
+ formArea.innerHTML=html;
+ if(currentType==='Link') document.getElementById('content').value='https://www.example.com';
+}
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentType=btn.dataset.type;renderForm();document.getElementById('message').textContent='';}));
+function getPayload(){
+ const val=id=>(document.getElementById(id)?.value||'').trim();
+ if(currentType==='Link'||currentType==='Text') return val('content');
+ if(currentType==='WiFi'){const ssid=val('ssid'),pass=val('wifiPass'),sec=val('security');if(!ssid)return '';return `WIFI:T:${sec};S:${ssid.replace(/[\\;,":]/g,'\\$&')};P:${sec==='nopass'?'':pass.replace(/[\\;,":]/g,'\\$&')};H:${!!document.getElementById('hidden')?.checked};;`;}
+ if(currentType==='Contact'){const name=val('cname'),phone=val('cphone'),email=val('cemail'),org=val('corg');if(!name&&!phone&&!email)return '';return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${org}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;}
+ if(currentType==='SMS'){const phone=val('phone'),msg=val('smsText');return phone?`SMSTO:${phone}:${msg}`:'';}
+ if(currentType==='Email'){const to=val('emailTo'),sub=val('emailSubject'),body=val('emailBody');return to?`mailto:${to}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`:'';}
+ return '';
+}
+function generateQR(){
+ const payload=getPayload(), message=document.getElementById('message');
+ if(!payload){message.style.color='#ff9da9';message.textContent='Please enter the required information first.';return;}
+ if(typeof QRCode==='undefined'){message.style.color='#ff9da9';message.textContent='QR library could not load. Please connect to the internet and reload this file.';return;}
+ const size=Number(document.getElementById('size').value),color=document.getElementById('color').value,bg=document.getElementById('bgcolor').value;
+ document.getElementById('qrcode').innerHTML='';
+ try{qrInstance=new QRCode(document.getElementById('qrcode'),{text:payload,width:size,height:size,colorDark:color,colorLight:bg,correctLevel:QRCode.CorrectLevel.H});}
+ catch(e){message.style.color='#ff9da9';message.textContent='This content is too long for a QR code. Try shorter text.';return;}
+ historyItems.unshift({type:currentType,payload,time:new Date().toLocaleString()});historyItems=historyItems.slice(0,10);
+ document.getElementById('hint').textContent='Scan this QR code to use your '+currentType.toLowerCase()+' information.';
+ document.getElementById('previewStatus').textContent='Ready to download or share.';
+ message.style.color='#8fe9bd';message.textContent='QR code generated successfully!';
+}
+function downloadQR(){
+ const box=document.getElementById('qrcode'),canvas=box.querySelector('canvas'),img=box.querySelector('img');
+ let url=canvas?canvas.toDataURL('image/png'):img?.src;
+ if(!url){document.getElementById('message').textContent='Generate a QR code first.';return;}
+ const a=document.createElement('a');a.href=url;a.download='my-qr-code.png';document.body.appendChild(a);a.click();a.remove();
+}
+function toggleTheme(){document.body.classList.toggle('light');document.getElementById('themeBtn').textContent=document.body.classList.contains('light')?'☀ Light Mode':'☾ Dark Mode';}
+function showHistory(){if(!historyItems.length){alert('No QR codes generated in this session yet.');return;}alert('Recent QR codes:\\n\\n'+historyItems.map((x,i)=>`${i+1}. ${x.type} — ${x.time}\\n${x.payload.slice(0,90)}`).join('\\n\\n'));}
+function showSettings(){alert('Settings: choose QR size, QR color, background color and theme using the controls on this page. QR history is kept only for this open session.');}
+renderForm();generateQR();
+</script>
+</body>
+</html>
